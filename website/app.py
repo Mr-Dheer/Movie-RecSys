@@ -69,8 +69,8 @@ def fetch_poster(movie_id):
 def fetch_overview(movie_id):
     url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key=472483140ad07905a27f7ff2eed59152&language=en-US"
     data = requests.get(url).json()
-    overview_path = data['overview']
-    return overview_path
+    overview_data = data['overview']
+    return overview_data
 
 #https://api.themoviedb.org/3/movie/550?api_key=472483140ad07905a27f7ff2eed59152
 
