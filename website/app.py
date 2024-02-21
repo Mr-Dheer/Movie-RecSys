@@ -6,24 +6,7 @@ from random import randint
 movies = pickle.load(open('movies.pkl', 'rb'))
 similarity = pickle.load(open('similarity.pkl', 'rb'))
 
-# st.dataframe(movies)
 
-hello=movies.head()
-st.code('temp')
-
-
-
-
-
-
-  
-
-# if st.button("Home"):
-#     st.switch_page("your_app.py")
-# if st.button("Page 1"):
-#     st.switch_page("pages/page_1.py")
-# if st.button("Page 2"):
-#     st.switch_page("pages/page_2.py")
 
 # Custom CSS Styling
 st.markdown(
@@ -100,7 +83,7 @@ def recommend(movie):
     recommended_movie_posters = []
     recommend_movie_overview = []
 
-    button_key=[] 
+
 
     
     for i in distances[1:6]:
@@ -112,7 +95,7 @@ def recommend(movie):
         recommend_movie_overview.append(overview)
         recommended_movie_posters.append(poster)
         recommended_movie_names.append(movies.iloc[i[0]].title)
-        button_key=movie_id
+
 
         # button_key.append(movie_id) # Adding a unique identifier
         
@@ -136,10 +119,6 @@ if st.sidebar.button('Show Recommendation'):
                 st.markdown(f"<h3>{name}</h3>", unsafe_allow_html=True)
                 st.write("Overview:")
                 st.write(overview)
-
-              
-                button_key = randint(0,100) # Generate a unique key 
-                st.button('Reviews of the Movie', key=button_key)
 
 
     except Exception as e:
