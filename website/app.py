@@ -1,10 +1,29 @@
 import pickle
 import streamlit as st
 import requests
-
+from random import randint
 # Pickle Files
 movies = pickle.load(open('movies.pkl', 'rb'))
 similarity = pickle.load(open('similarity.pkl', 'rb'))
+
+# st.dataframe(movies)
+
+hello=movies.head()
+st.code('temp')
+
+
+
+
+
+
+  
+
+# if st.button("Home"):
+#     st.switch_page("your_app.py")
+# if st.button("Page 1"):
+#     st.switch_page("pages/page_1.py")
+# if st.button("Page 2"):
+#     st.switch_page("pages/page_2.py")
 
 # Custom CSS Styling
 st.markdown(
@@ -72,23 +91,32 @@ def fetch_overview(movie_id):
     overview_data = data['overview']
     return overview_data
 
-#https://api.themoviedb.org/3/movie/550?api_key=472483140ad07905a27f7ff2eed59152
-
-
 # Recommendation Logic
 def recommend(movie):
     index = movies[movies['title'] == movie].index[0]
     distances = sorted(list(enumerate(similarity[index])), reverse=True, key=lambda x: x[1])
+
     recommended_movie_names = []
     recommended_movie_posters = []
     recommend_movie_overview = []
+
+    button_key=[] 
+
+    
     for i in distances[1:6]:
         movie_id = movies.iloc[i[0]].movie_id
         overview = fetch_overview(movie_id)
-        poster = fetch_poster(movie_id)  # Assuming fetch_poster fetches the poster
+        poster = fetch_poster(movie_id) # Assuming fetch_poster fetches the poster
+        
+        
         recommend_movie_overview.append(overview)
         recommended_movie_posters.append(poster)
         recommended_movie_names.append(movies.iloc[i[0]].title)
+        button_key=movie_id
+
+        # button_key.append(movie_id) # Adding a unique identifier
+        
+
 
     return recommended_movie_names, recommended_movie_posters, recommend_movie_overview
 
@@ -109,9 +137,10 @@ if st.sidebar.button('Show Recommendation'):
                 st.write("Overview:")
                 st.write(overview)
 
+              
+                button_key = randint(0,100) # Generate a unique key 
+                st.button('Reviews of the Movie', key=button_key)
+
+
     except Exception as e:
         st.error(f"Error: {e}")
-
-
-
-
