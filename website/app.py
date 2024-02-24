@@ -63,7 +63,7 @@ selected_movie = st.sidebar.selectbox("Type or select a movie from the dropdown"
 def fetch_poster(movie_id):
     url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key=472483140ad07905a27f7ff2eed59152&language=en-US"
     data = requests.get(url).json()
-    poster_path = data['poster_path']
+    poster_path = data['poster_path'] 
     full_path = f"https://image.tmdb.org/t/p/w500/{poster_path}"
     return full_path
 
@@ -73,6 +73,23 @@ def fetch_overview(movie_id):
     data = requests.get(url).json()
     overview_data = data['overview']
     return overview_data
+
+# Fetch Reviews
+def fetch_reviews(movie_id):
+    api_key = '472483140ad07905a27f7ff2eed59152'
+    response = requests.get(f"https://api.themoviedb.org/3/movie/{movie_id}/reviews?api_key={api_key}&language=en-US")
+    
+    data = response.json()
+    
+    reviews = data.get('results', [])  # This gets the list of reviews
+    
+    all_reviews_content = ""  
+    for review in reviews[:4]:  
+
+        all_reviews_content += f"Author: {review.get('author')}\nContent: {review.get('content')}\n\n"
+    
+print(fetch_reviews('49026'))
+
 
 # Recommendation Logic
 def recommend(movie):
