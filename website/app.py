@@ -87,8 +87,9 @@ def fetch_reviews(movie_id):
     for review in reviews[:4]:  
 
         all_reviews_content += f"Author: {review.get('author')}\nContent: {review.get('content')}\n\n"
+    return all_reviews_content.strip() 
     
-print(fetch_reviews('49026'))
+# print(fetch_reviews('49026'))
 
 
 # Recommendation Logic
