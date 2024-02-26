@@ -74,6 +74,13 @@ def fetch_overview(movie_id):
     overview_data = data['overview']
     return overview_data
 
+def fetch_popularity(movie_id):
+    url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key=472483140ad07905a27f7ff2eed59152&language=en-US"
+    data = requests.get(url).json()
+    popularity_data = data['popularity']
+    return popularity_data
+
+
 # Fetch Reviews
 def fetch_reviews(movie_id):
     api_key = '472483140ad07905a27f7ff2eed59152'
@@ -100,6 +107,7 @@ def recommend(movie):
     recommended_movie_names = []
     recommended_movie_posters = []
     recommend_movie_overview = []
+    popularity_movie=[]
 
 
 
@@ -107,10 +115,12 @@ def recommend(movie):
     for i in distances[1:6]:
         movie_id = movies.iloc[i[0]].movie_id
         overview = fetch_overview(movie_id)
-        poster = fetch_poster(movie_id) # Assuming fetch_poster fetches the poster
+        poster = fetch_poster(movie_id) 
+        popularity=fetch_popularity(movie_id)
         
         
         recommend_movie_overview.append(overview)
+        popularity_movie.append(popularity)
         recommended_movie_posters.append(poster)
         recommended_movie_names.append(movies.iloc[i[0]].title)
 
@@ -119,24 +129,28 @@ def recommend(movie):
         
 
 
-    return recommended_movie_names, recommended_movie_posters, recommend_movie_overview
+    return recommended_movie_names, recommended_movie_posters, recommend_movie_overview, popularity_movie
 
 # Show Recommendation Button
 if st.sidebar.button('Show Recommendation'):
     st.markdown("---")
     try:
-        recommended_movie_names, recommended_movie_posters, recommend_movie_overviews = recommend(selected_movie)
+        recommended_movie_names, recommended_movie_posters, recommend_movie_overviews, popularity_movie = recommend(selected_movie)
         st.markdown("<h2>Recommended Movies</h2>", unsafe_allow_html=True)
-        for name, poster, overview in zip(recommended_movie_names, recommended_movie_posters, recommend_movie_overviews):
-            col_poster, col_overview = st.columns([2, 3])  # Adjust the column ratios as needed
+        for name, poster, overview, popularity in zip(recommended_movie_names, recommended_movie_posters, recommend_movie_overviews, popularity_movie ):
+            col_poster, col = st.columns([2, 3])  # Adjust the column ratios as needed
 
             with col_poster:
                 st.image(poster, use_column_width=True)
 
-            with col_overview:
+            with col:
                 st.markdown(f"<h3>{name}</h3>", unsafe_allow_html=True)
                 st.write("Overview:")
                 st.write(overview)
+            
+            with col:
+                st.write("Rating:")
+                st.write(popularity)
 
 
     except Exception as e:
