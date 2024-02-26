@@ -124,8 +124,6 @@ def recommend(movie):
         recommended_movie_posters.append(poster)
         recommended_movie_names.append(movies.iloc[i[0]].title)
 
-
-        # button_key.append(movie_id) # Adding a unique identifier
         
 
 
