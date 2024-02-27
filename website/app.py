@@ -8,6 +8,7 @@ similarity = pickle.load(open('similarity.pkl', 'rb'))
 
 
 
+
 # Custom CSS Styling
 st.markdown(
     """
@@ -74,6 +75,7 @@ def fetch_overview(movie_id):
     overview_data = data['overview']
     return overview_data
 
+# Fetch Rating
 def fetch_popularity(movie_id):
     url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key=472483140ad07905a27f7ff2eed59152&language=en-US"
     data = requests.get(url).json()
@@ -94,9 +96,9 @@ def fetch_reviews(movie_id):
     for review in reviews[:4]:  
 
         all_reviews_content += f"Author: {review.get('author')}\nContent: {review.get('content')}\n\n"
+
     return all_reviews_content.strip() 
-    
-# print(fetch_reviews('49026'))
+
 
 
 # Recommendation Logic
@@ -148,7 +150,7 @@ if st.sidebar.button('Show Recommendation'):
             
             with col:
                 st.write("Rating:")
-                st.write(popularity)
+                st.write(f'{popularity} %')
 
 
     except Exception as e:
