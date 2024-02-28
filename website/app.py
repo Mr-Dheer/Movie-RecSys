@@ -110,6 +110,8 @@ def recommend(movie):
     recommended_movie_posters = []
     recommend_movie_overview = []
     popularity_movie=[]
+    button_key=[]
+    recommended_reviews=[]
 
 
 
@@ -119,25 +121,29 @@ def recommend(movie):
         overview = fetch_overview(movie_id)
         poster = fetch_poster(movie_id) 
         popularity=fetch_popularity(movie_id)
+        reviews=fetch_reviews(movie_id)
+        button_key.append(movie_id)
+
         
         
         recommend_movie_overview.append(overview)
         popularity_movie.append(popularity)
         recommended_movie_posters.append(poster)
+        recommended_reviews.append(reviews)
         recommended_movie_names.append(movies.iloc[i[0]].title)
 
         
 
 
-    return recommended_movie_names, recommended_movie_posters, recommend_movie_overview, popularity_movie
+    return recommended_movie_names, recommended_movie_posters, recommend_movie_overview, popularity_movie, button_key, recommended_reviews
 
 # Show Recommendation Button
 if st.sidebar.button('Show Recommendation'):
     st.markdown("---")
     try:
-        recommended_movie_names, recommended_movie_posters, recommend_movie_overviews, popularity_movie = recommend(selected_movie)
+        recommended_movie_names, recommended_movie_posters, recommend_movie_overviews, popularity_movie, button_key, recommended_reviews = recommend(selected_movie)
         st.markdown("<h2>Recommended Movies</h2>", unsafe_allow_html=True)
-        for name, poster, overview, popularity in zip(recommended_movie_names, recommended_movie_posters, recommend_movie_overviews, popularity_movie ):
+        for name, poster, overview, popularity, button, reviews in zip(recommended_movie_names, recommended_movie_posters, recommend_movie_overviews, popularity_movie, button_key, recommended_reviews ):
             col_poster, col = st.columns([2, 3])  # Adjust the column ratios as needed
 
             with col_poster:
@@ -151,6 +157,7 @@ if st.sidebar.button('Show Recommendation'):
             with col:
                 st.write("Rating:")
                 st.write(f'{popularity} %')
+                st.button('Sentiment Laonga mein', key=button)
 
 
     except Exception as e:
