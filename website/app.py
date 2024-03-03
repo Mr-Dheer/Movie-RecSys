@@ -2,6 +2,7 @@ import pickle
 import streamlit as st
 import requests
 from random import randint
+import pandas as pd
 # Pickle Files
 movies = pickle.load(open('movies.pkl', 'rb'))
 similarity = pickle.load(open('similarity.pkl', 'rb'))
@@ -83,24 +84,6 @@ def fetch_popularity(movie_id):
     return popularity_data
 
 
-# Fetch Reviews
-def fetch_reviews(movie_id):
-    api_key = '472483140ad07905a27f7ff2eed59152'
-    response = requests.get(f"https://api.themoviedb.org/3/movie/{movie_id}/reviews?api_key={api_key}&language=en-US")
-    
-    data = response.json()
-    
-    reviews = data.get('results', [])  # This gets the list of reviews
-    
-    all_reviews_content = ""  
-    for review in reviews[:4]:  
-
-        all_reviews_content += f"Author: {review.get('author')}\nContent: {review.get('content')}\n\n"
-
-    return all_reviews_content.strip() 
-
-
-
 # Recommendation Logic
 def recommend(movie):
     index = movies[movies['title'] == movie].index[0]
@@ -121,30 +104,29 @@ def recommend(movie):
         overview = fetch_overview(movie_id)
         poster = fetch_poster(movie_id) 
         popularity=fetch_popularity(movie_id)
-        reviews=fetch_reviews(movie_id)
-        button_key.append(movie_id)
+
+
 
         
         
         recommend_movie_overview.append(overview)
         popularity_movie.append(popularity)
         recommended_movie_posters.append(poster)
-        recommended_reviews.append(reviews)
         recommended_movie_names.append(movies.iloc[i[0]].title)
 
         
 
 
-    return recommended_movie_names, recommended_movie_posters, recommend_movie_overview, popularity_movie, button_key, recommended_reviews
+    return recommended_movie_names, recommended_movie_posters, recommend_movie_overview, popularity_movie 
 
 # Show Recommendation Button
 if st.sidebar.button('Show Recommendation'):
     st.markdown("---")
     try:
-        recommended_movie_names, recommended_movie_posters, recommend_movie_overviews, popularity_movie, button_key, recommended_reviews = recommend(selected_movie)
+        recommended_movie_names, recommended_movie_posters, recommend_movie_overviews, popularity_movie = recommend(selected_movie)
         st.markdown("<h2>Recommended Movies</h2>", unsafe_allow_html=True)
-        for name, poster, overview, popularity, button, reviews in zip(recommended_movie_names, recommended_movie_posters, recommend_movie_overviews, popularity_movie, button_key, recommended_reviews ):
-            col_poster, col = st.columns([2, 3])  # Adjust the column ratios as needed
+        for name, poster, overview, popularity in zip(recommended_movie_names, recommended_movie_posters, recommend_movie_overviews, popularity_movie ):
+            col_poster, col = st.columns([2, 3])  # Column ratios
 
             with col_poster:
                 st.image(poster, use_column_width=True)
@@ -157,7 +139,6 @@ if st.sidebar.button('Show Recommendation'):
             with col:
                 st.write("Rating:")
                 st.write(f'{popularity} %')
-                st.button('Sentiment Laonga mein', key=button)
 
 
     except Exception as e:
